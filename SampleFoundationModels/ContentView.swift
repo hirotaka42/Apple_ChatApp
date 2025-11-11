@@ -444,16 +444,25 @@ struct GenerativeView: View {
             }
 
             print("✅ セッションが利用可能、応答をリクエスト中...")
+            print("   プロンプト: \(prompt)")
 
             // LanguageModelSession の respond メソッドを使用
             let response = try await session.respond(to: prompt)
 
-            print("✅ 応答を受信: \(response.content.prefix(50))...")
+            print("✅ 応答を受信")
+            print("   応答型: \(type(of: response))")
+            print("   応答内容: \(response.content)")
 
             // レスポンスから文字列を取得
             messages.append(.init(role: .assistant, text: response.content))
         } catch {
-            print("❌ エラー発生: \(error.localizedDescription)")
+            print("❌ エラー発生: \(error)")
+            print("❌ エラー詳細: \(error.localizedDescription)")
+            if let nsError = error as NSError? {
+                print("❌ エラーコード: \(nsError.code)")
+                print("❌ エラードメイン: \(nsError.domain)")
+                print("❌ ユーザー情報: \(nsError.userInfo)")
+            }
             lastError = error.localizedDescription
             messages.append(.init(role: .assistant, text: "エラーが発生しました: \(error.localizedDescription)"))
         }
