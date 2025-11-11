@@ -211,7 +211,13 @@ struct GenerativeView: View {
                     }
                     .padding(16)
                     .padding(.bottom, 8)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        hideKeyboard()
+                    }
                 }
+                .scrollDismissesKeyboard(.interactively)
                 .onChange(of: messages) { _, _ in
                     if let lastID = messages.last?.id {
                         DispatchQueue.main.async {
@@ -471,4 +477,11 @@ struct GenerativeView: View {
 
 #Preview {
     ContentView()
+}
+
+// MARK: - Keyboard Dismissal Extension
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
